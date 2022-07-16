@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/16 15:56:39 by yujelee           #+#    #+#             */
-/*   Updated: 2022/07/16 18:31:58 by yujelee          ###   ########.fr       */
+/*   Updated: 2022/07/16 18:41:03 by yujelee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ size_t	ft_strlen(const char *str)
 	return (count);
 }
 
-int	find_end(char *str, int len)
+int	find_nl(char *str, int len)
 {
 	int	idx;
 
@@ -67,14 +67,25 @@ char	*split(char *str)
 	int				idx;
 	int				idx2;
 
-	loc = find_end(str, BUFFER_SIZE);
+	loc = find_nl(str, BUFFER_SIZE);
 	ret = (char *)malloc(loc * sizeof(char));
 	if (!ret)
 		return (NULL);
 	idx = -1;
 	while (++idx < loc)
-		ret[idx] = str[idx]
+		ret[idx] = str[idx];
 	return (ret);
+}
+
+char	*makenewstr(char *str)
+{
+	unsigned char	*ret;
+	int	loc;
+	int	idx;
+
+	loc = find_nl(str, BUFFER_SIZE);
+
+
 }
 
 char	*get_next_line(int fd)
@@ -91,11 +102,12 @@ char	*get_next_line(int fd)
 	while (1)
 	{
 		ret = strjoin(ret, temp);
-		if (find_end(temp, BUFFER_SIZE) < BUFFER_SIZE)
+		if (find_nl(temp, BUFFER_SIZE) < BUFFER_SIZE)
 			break;
 		read(fd, temp, BUFFER_SIZE);
 	}
 	free(temp);
-	temp = 
+	temp = split(ret);
+	ret = 
 
 }
