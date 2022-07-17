@@ -11,16 +11,8 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-size_t	ft_strlen(const char *str)
-{
-	size_t	count;
-
-	count = 0;
-	while (str[count])
-		++count;
-	return (count);
-}
+#include <stdio.h>
+#define BUFFER_SIZE 42
 
 int	find_nl(char *str, int len)
 {
@@ -33,10 +25,10 @@ int	find_nl(char *str, int len)
 			return (idx);
 		idx++;
 	}
-	return (idx);
+	return (-1);
 }
 
-char	*strjoin(char const *s1, char const *s2)
+char	*strjoin(char *s1, char *s2, unsigned int s1size, unsigned int s2size)
 {
 	int		amount;
 	char	*ret;
@@ -45,7 +37,7 @@ char	*strjoin(char const *s1, char const *s2)
 
 	if (!s2)
 		return (NULL);
-	amount = ft_strlen(s1) + ft_strlen(s2);
+	amount = s1size + s2size;
 	ret = (char *)malloc((amount + 1) * sizeof(char));
 	if (!ret)
 		return (NULL);
@@ -60,54 +52,80 @@ char	*strjoin(char const *s1, char const *s2)
 	return (ret);
 }
 
-char	*split(char *str)
+char	*split(char *temp, char *str, unsigned int strsize)
 {
-	unsigned char	*ret;
+	char	*ret;
 	int				loc;
 	int				idx;
-	int				idx2;
 
-	loc = find_nl(str, BUFFER_SIZE);
-	ret = (char *)malloc(loc * sizeof(char));
+	free(temp);
+	loc = find_nl(str, strsize);
+	ret = (char *)malloc((loc + 1) * sizeof(char));
 	if (!ret)
 		return (NULL);
 	idx = -1;
 	while (++idx < loc)
 		ret[idx] = str[idx];
+	ret[idx] = 0;
 	return (ret);
 }
 
-char	*makenewstr(char *str)
+char	*makenewstr(char *str, unsigned int strsize)
 {
-	unsigned char	*ret;
-	int	loc;
+	char	*ret;
+	unsigned int	loc;
 	int	idx;
 
-	loc = find_nl(str, BUFFER_SIZE);
+	loc = find_nl(str, strsize);
+	ret = (char *)malloc((strsize - loc) * sizeof(char));
+	if (!ret)
+		return (NULL);
+	idx = -1;
+	while (loc < strsize)
+		ret[++idx] = str[++loc];
+	return (ret);
+}
 
+void freeall()
+{
 
 }
 
 char	*get_next_line(int fd)
 {
-	static unsigned char	*ret;
-	unsigned char			*temp;
+	static char			*ret;
+	char				*temp;
+	static unsigned int	retsize;
+	unsigned int		tempsize;
 
 	temp = (char *)malloc(BUFFER_SIZE * sizeof(char));
 	if (!temp)
 		return (NULL);
-	read(fd, temp, BUFFER_SIZE);
-	if (ft_strlen(temp) == 0)
-		return (NULL);
-	while (1)
+	tempsize = read(fd, temp, BUFFER_SIZE);
+	if (tempsize == 0)
+			return (NULL);
+	retsize = 0;
+	while (tempsize)
 	{
-		ret = strjoin(ret, temp);
-		if (find_nl(temp, BUFFER_SIZE) < BUFFER_SIZE)
+		ret = strjoin(ret, temp, retsize, tempsize);
+		retsize += tempsize;
+		if (find_nl(temp, tempsize) < BUFFER_SIZE)
 			break;
-		read(fd, temp, BUFFER_SIZE);
+		tempsize = read(fd, temp, BUFFER_SIZE);
 	}
-	free(temp);
-	temp = split(ret);
-	ret = 
+	temp = split(temp, ret, retsize);
+	if (!temp)
+		return (NULL);
+	ret = makenewstr(ret, retsize);
+	if (!ret)
+		return (NULL);
+	retsize -= find_nl(ret, retsize);
+	return (temp);
+}
 
+int main()
+{
+	int fd = open("test.txt", O_RDONLY);
+
+	get_next_line(fd);
 }
