@@ -6,14 +6,14 @@
 /*   By: yujelee <yujelee@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/16 15:56:39 by yujelee           #+#    #+#             */
-/*   Updated: 2022/07/18 21:45:11 by yujelee          ###   ########.fr       */
+/*   Updated: 2022/07/18 21:54:33 by yujelee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 #include <fcntl.h>
-//#define BUFFER_SIZE 42
+#define BUFFER_SIZE 1
 
 int	find_nl(char *str, int len)
 {
@@ -22,7 +22,7 @@ int	find_nl(char *str, int len)
 	idx = 0;
 	while (len--)
 	{
-		if (str[idx] == '\n' || str[idx] == 0)
+		if (str[idx] == '\n'|| str[idx] == 0)
 			return (idx);
 		idx++;
 	}
@@ -44,7 +44,7 @@ char	*strjoin(char *s1, char *s2, int s1size, int s2size)
 		return (NULL);
 	idx1 = 0;
 	idx2 = 0;
-	while (idx1 < s1size - 1)
+	while (idx1 < s1size)
 		ret[idx2++] = s1[idx1++];
 	idx1 = 0;
 	while (idx1 < s2size)
@@ -67,7 +67,7 @@ char	*split(char *temp, char *str, int strsize)
 	idx = -1;
 	while (++idx < loc)
 		ret[idx] = str[idx];
-	ret[idx] = 0;
+	ret[++idx] = 0;
 	return (ret);
 }
 
@@ -79,7 +79,7 @@ char	*makenewstr(char *str, int *strsize)
 	int		idx;
 
 	loc = find_nl(str, *strsize);
-	temp = *strsize - loc;
+	temp = *strsize - loc - 1;
 	ret = (char *)malloc((*strsize - loc) * sizeof(char));
 	if (!ret)
 		return (NULL);
@@ -98,11 +98,13 @@ char	*get_next_line(int fd)
 	static int	retsize;
 	int			tempsize;
 
+	if (fd < 0)
+		return (NULL);
 	temp = (char *)malloc(BUFFER_SIZE * sizeof(char));
 	if (!temp)
 		return (NULL);
   	tempsize = read(fd, temp, BUFFER_SIZE);
-	if (tempsize == 0 && retsize == 0)
+	if (tempsize == 0 && retsize <= 0)
 	{
 		free(temp);
 		return (NULL);
@@ -110,8 +112,10 @@ char	*get_next_line(int fd)
 	while (tempsize || retsize)
 	{
 		ret = strjoin(ret, temp, retsize, tempsize);
+		if (!ret)
+			return (NULL);
 		retsize += tempsize;
-		if (find_nl(ret, retsize) < retsize)
+		if (find_nl(ret, retsize) < retsize || !tempsize)
 			break ;
 		tempsize = read(fd, temp, BUFFER_SIZE);
 	}
@@ -121,16 +125,21 @@ char	*get_next_line(int fd)
 	ret = makenewstr(ret, &retsize);
 	if (!ret)
 		return (NULL);
+	if (retsize <= 0&& !tempsize && ret)
+		free(ret);
 	return (temp);
 }
 
-/*
+
 int main()
 {
 	int fd = open("test.txt", O_RDONLY);
 
+	//printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
 	printf("result1 -> %s \n", get_next_line(fd));
+	
 	printf("result2 -> %s \n", get_next_line(fd));
+	
 	printf("result3 -> %s \n", get_next_line(fd));
 	printf("result4 -> %s \n", get_next_line(fd));
 	printf("result5 -> %s \n", get_next_line(fd));
@@ -143,9 +152,6 @@ int main()
 	printf("result6 -> %s \n", get_next_line(fd));
 	printf("result6 -> %s \n", get_next_line(fd));
 	printf("result6 -> %s \n", get_next_line(fd));
-	printf("result6 -> %s \n", get_next_line(fd));
-	printf("result6 -> %s \n", get_next_line(fd));
-	printf("result6 -> %s \n", get_next_line(fd));
+	//printf("result6 -> %s \n", get_next_line(fd));
 	
 }
-*/
