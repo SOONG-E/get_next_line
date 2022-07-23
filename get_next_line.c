@@ -13,7 +13,7 @@
 #include "get_next_line.h"
 #include <stdio.h>
 #include <fcntl.h>
-#define BUFFER_SIZE 42
+//#define BUFFER_SIZE 42
 
 int	find_nl(char *str, int len)
 {
@@ -131,7 +131,7 @@ char	*get_next_line(int fd)
 	return (temp);
 }
 
-
+/*
 int main()
 {
 	int fd = open("test.txt", O_RDONLY);
@@ -155,4 +155,4 @@ int main()
 	printf("result6 -> %s \n", get_next_line(fd));
 	//printf("result6 -> %s \n", get_next_line(fd));
 	
-}
+}*/
