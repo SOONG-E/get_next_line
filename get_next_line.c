@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:08:33 by yujelee           #+#    #+#             */
-/*   Updated: 2022/07/26 20:54:37 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/07/26 21:59:07 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <fcntl.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 #include <stdio.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
-#define BUFFER_SIZE 2
+#define BUFFER_SIZE 1
 
 int	ft_strlen(char *str, int flag)
 {
@@ -51,12 +51,20 @@ char	*strjoin(char *str1, char *str2)
 	{
 		stridx = 0;
 		while (str1[stridx])
+		{
 			ret[retidx++] = str1[stridx++];
+			printf("\n\n\n%c??\n\n\n", ret[retidx-1]);
+		}
 		free(str1);
 	}
 	stridx = 0;
 	while (str2[stridx])
+	{
 		ret[retidx++] = str2[stridx++];
+		printf("\n\n\n\n%d\n\n\n", stridx);
+		printf("\n\n\nlen = %d\n\n\n", ft_strlen(str2, 1));
+		for(int i = 0; i<1000000000; i++);
+	}
 	ret[retidx] = 0;
 	return (ret);
 }
@@ -66,7 +74,8 @@ char	*read_temp(int fd, char *ret, char *temp)
 	int	idx;
 	int	tempidx;
 
-	printf("read_temp %s\n", ret);
+	//printf("read_temp %s\n", ret);
+	printf("\n\n\n\n\n%d\n\n\n\n\n\n", ft_strlen(ret, 1));
 	idx = read(fd, temp, BUFFER_SIZE);
 	if (!idx)
 		return (ret);
@@ -74,10 +83,11 @@ char	*read_temp(int fd, char *ret, char *temp)
 	{
 		temp[idx] = 0;
 		tempidx = 0;
-		printf("# -> %s\n", temp);
+		//printf("# -> %s\n", temp);
 		while (temp[tempidx] && temp[tempidx] != '\n')
 			tempidx++; 
 		ret = strjoin(ret, temp);
+		//printf("RET %s.\n", ret);
 		//printf("@@%s\n", ret);
 		if (!ret)
 			return (NULL);
@@ -85,11 +95,13 @@ char	*read_temp(int fd, char *ret, char *temp)
 		if (tempidx < idx)
 			break;
 		idx = read(fd, temp, BUFFER_SIZE);
+		printf("\n\n\nidx = %d\n\n\n", idx);
+		
 	}
 	//printf("****%s****\n", ret);
 	return (ret);
 }
-
+//ret 저장 temp 리턴
 char	*temp_split(char *temp, char *ret)
 {
 	int	idx;
@@ -98,12 +110,18 @@ char	*temp_split(char *temp, char *ret)
 	temp = (char *)malloc((ft_strlen(ret, 0) + 1) * sizeof(char));
 	if (!temp)
 		return (NULL);
-	idx = -1;
-	while (ret[++idx] != '\n')
+	idx = 0;
+	while (ret[idx] && ret[idx] != '\n')
+	{
 		temp[idx] = ret[idx];
+		idx++;
+	}
 	if (ret[idx] == '\n')
+	{
 		temp[idx] = '\n';
-	temp[++idx] = 0;
+		idx++;
+	}
+	temp[idx] = 0;
 	return (temp);
 }
 
@@ -113,7 +131,7 @@ char	*remain_ret(char *ret)
 	int		idx;
 	int		newidx;
 
-	printf("@@@ %d %d\n", ft_strlen(ret, 0), ft_strlen(ret, 1));
+	//printf("@@@ %d %d\n", ft_strlen(ret, 0), ft_strlen(ret, 1));
 	idx = ft_strlen(ret, 0);
 	newret = (char *)malloc((ft_strlen(ret, 1) - idx + 1) * sizeof(char));
 	if (!newret)
@@ -123,7 +141,7 @@ char	*remain_ret(char *ret)
 		newret[newidx++] = ret[idx];
 	newret[newidx] = 0;
 	free(ret);
-	printf("newret %s\n", newret);
+	//printf("newret %s\n", newret);
 	return (newret);
 }
 
@@ -132,7 +150,7 @@ char	*get_next_line(int fd)
 	static char	*ret;
 	char		*temp;
 
-	printf("at the first time %s-\n", ret);
+	//printf("at the first time %s-\n", ret);
 	temp = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!temp || fd < 0)
 		return (NULL);
@@ -145,7 +163,6 @@ char	*get_next_line(int fd)
 	ret = remain_ret(ret);
 	if (!ret)
 		return (NULL);
-	printf("ret changed %s-\n", ret);
 	if (!ft_strlen(ret, 1))
 		free(ret);
 	return (temp);
