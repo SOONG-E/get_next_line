@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:08:33 by yujelee           #+#    #+#             */
-/*   Updated: 2022/07/26 21:59:07 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 19:43:08 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <fcntl.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 #include <stdio.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
-#define BUFFER_SIZE 1
+#define BUFFER_SIZE 42  //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 
 int	ft_strlen(char *str, int flag)
 {
@@ -31,6 +31,8 @@ int	ft_strlen(char *str, int flag)
 		return (len);
 	}
 	while (str[len] && str[len] != '\n')
+		len++;
+	if (str[len] == '\n')
 		len++;
 	return (len);
 }
@@ -51,71 +53,55 @@ char	*strjoin(char *str1, char *str2)
 	{
 		stridx = 0;
 		while (str1[stridx])
-		{
 			ret[retidx++] = str1[stridx++];
-			printf("\n\n\n%c??\n\n\n", ret[retidx-1]);
-		}
 		free(str1);
 	}
 	stridx = 0;
 	while (str2[stridx])
-	{
 		ret[retidx++] = str2[stridx++];
-		printf("\n\n\n\n%d\n\n\n", stridx);
-		printf("\n\n\nlen = %d\n\n\n", ft_strlen(str2, 1));
-		for(int i = 0; i<1000000000; i++);
-	}
 	ret[retidx] = 0;
 	return (ret);
 }
 
-char	*read_temp(int fd, char *ret, char *temp)
+char	*read_temp(int fd, char *ret)
 {
-	int	idx;
-	int	tempidx;
+	int		idx;
+	char	*temp;
 
-	//printf("read_temp %s\n", ret);
-	printf("\n\n\n\n\n%d\n\n\n\n\n\n", ft_strlen(ret, 1));
+	temp = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!temp)
+		return (NULL);
 	idx = read(fd, temp, BUFFER_SIZE);
-	if (!idx)
-		return (ret);
-	while (idx)
+	while (idx > 0)
 	{
 		temp[idx] = 0;
-		tempidx = 0;
-		//printf("# -> %s\n", temp);
-		while (temp[tempidx] && temp[tempidx] != '\n')
-			tempidx++; 
 		ret = strjoin(ret, temp);
-		//printf("RET %s.\n", ret);
-		//printf("@@%s\n", ret);
 		if (!ret)
 			return (NULL);
-		//printf("SIZE!!! %d %d\n", tempidx, idx);
-		if (tempidx < idx)
-			break;
+		if (ft_strlen(temp, 0) < idx)
+			break;	
 		idx = read(fd, temp, BUFFER_SIZE);
-		printf("\n\n\nidx = %d\n\n\n", idx);
-		
 	}
-	//printf("****%s****\n", ret);
+	free(temp);
+	if (!ft_strlen(ret, 1) && idx <= 0)
+	{
+		free(ret);
+		return (NULL);
+	}
 	return (ret);
 }
 //ret 저장 temp 리턴
-char	*temp_split(char *temp, char *ret)
+char	*temp_split(char *ret)
 {
-	int	idx;
+	int		idx;
+	char	*temp;
 
-	free(temp);
 	temp = (char *)malloc((ft_strlen(ret, 0) + 1) * sizeof(char));
 	if (!temp)
 		return (NULL);
-	idx = 0;
-	while (ret[idx] && ret[idx] != '\n')
-	{
+	idx = -1;
+	while (ret[++idx] && ret[idx] != '\n')
 		temp[idx] = ret[idx];
-		idx++;
-	}
 	if (ret[idx] == '\n')
 	{
 		temp[idx] = '\n';
@@ -125,23 +111,22 @@ char	*temp_split(char *temp, char *ret)
 	return (temp);
 }
 
-char	*remain_ret(char *ret)
+char	*ret_tail(char *ret)
 {
 	char	*newret;
 	int		idx;
 	int		newidx;
 
-	//printf("@@@ %d %d\n", ft_strlen(ret, 0), ft_strlen(ret, 1));
 	idx = ft_strlen(ret, 0);
 	newret = (char *)malloc((ft_strlen(ret, 1) - idx + 1) * sizeof(char));
 	if (!newret)
 		return (NULL);
 	newidx = 0;
-	while (ret[++idx])
-		newret[newidx++] = ret[idx];
+	while (ret[idx])
+		newret[newidx++] = ret[idx++];
 	newret[newidx] = 0;
-	free(ret);
-	//printf("newret %s\n", newret);
+	if (ret)
+		free(ret);
 	return (newret);
 }
 
@@ -150,23 +135,22 @@ char	*get_next_line(int fd)
 	static char	*ret;
 	char		*temp;
 
-	//printf("at the first time %s-\n", ret);
-	temp = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (!temp || fd < 0)
+	if (fd < 0)
 		return (NULL);
-	ret = read_temp(fd, ret, temp);
+	ret = read_temp(fd, ret);
 	if (!ret)
 		return (NULL);
-	temp = temp_split(temp, ret);
+	temp = temp_split(ret);
 	if (!temp)
 		return (NULL);
-	ret = remain_ret(ret);
+	ret = ret_tail(ret);
 	if (!ret)
 		return (NULL);
-	if (!ft_strlen(ret, 1))
-		free(ret);
+	//if (ret && !ft_strlen(ret, 1))
+	//	free(ret);
 	return (temp);
 }
+
 
 //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 int main()
@@ -180,15 +164,9 @@ int main()
 	
 	printf("result3 -> %s", get_next_line(fd));
 	printf("result4 -> %s", get_next_line(fd));
+	
 	printf("result5 -> %s", get_next_line(fd));
 	printf("result6 -> %s", get_next_line(fd));
 	printf("result6 -> %s", get_next_line(fd));
-	printf("result6 -> %s", get_next_line(fd));
-	printf("result6 -> %s", get_next_line(fd));
-	printf("result6 -> %s", get_next_line(fd));
-	printf("result6 -> %s", get_next_line(fd));
-	printf("result6 -> %s", get_next_line(fd));
-	printf("result6 -> %s", get_next_line(fd));
-	printf("result6 -> %s", get_next_line(fd));
-	//printf("result6 -> %s", get_next_line(fd));
+
 }
