@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:08:33 by yujelee           #+#    #+#             */
-/*   Updated: 2022/07/28 19:43:08 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/07/28 19:51:31 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,26 +16,6 @@
 #include <fcntl.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 #include <stdio.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 #define BUFFER_SIZE 42  //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
-
-int	ft_strlen(char *str, int flag)
-{
-	int	len;
-
-	len = 0;
-	if (!str)
-		return (0);
-	if (flag)
-	{
-		while (str[len])
-			len++;
-		return (len);
-	}
-	while (str[len] && str[len] != '\n')
-		len++;
-	if (str[len] == '\n')
-		len++;
-	return (len);
-}
 
 char	*strjoin(char *str1, char *str2)
 {
@@ -79,7 +59,7 @@ char	*read_temp(int fd, char *ret)
 		if (!ret)
 			return (NULL);
 		if (ft_strlen(temp, 0) < idx)
-			break;	
+			break ;
 		idx = read(fd, temp, BUFFER_SIZE);
 	}
 	free(temp);
@@ -90,7 +70,7 @@ char	*read_temp(int fd, char *ret)
 	}
 	return (ret);
 }
-//ret 저장 temp 리턴
+
 char	*temp_split(char *ret)
 {
 	int		idx;
@@ -146,12 +126,10 @@ char	*get_next_line(int fd)
 	ret = ret_tail(ret);
 	if (!ret)
 		return (NULL);
-	//if (ret && !ft_strlen(ret, 1))
-	//	free(ret);
 	return (temp);
 }
 
-
+/*
 //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 int main()
 {
@@ -170,3 +148,4 @@ int main()
 	printf("result6 -> %s", get_next_line(fd));
 
 }
+*/
