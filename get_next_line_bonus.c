@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 15:04:14 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/02 18:04:18 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/04 21:03:00 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,28 @@
 #include <stdlib.h>
 #include <fcntl.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 #include <stdio.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
-//#define BUFFER_SIZE 42  //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제no제하하기  제제발  제제바바제제바바
+#define BUFFER_SIZE 1  //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제no제하하기  제제발  제제바바제제바바
+
+/*
+int	ft_strlen(char *str, int flag)
+{
+	int	len;
+
+	len = 0;
+	if (!str)
+		return (0);
+	if (flag)
+	{
+		while (str[len])
+			len++;
+		return (len);
+	}
+	while (str[len] && str[len] != '\n')
+		len++;
+	if (str[len] == '\n')
+		len++;
+	return (len);
+}
 
 char	*strjoin(char *str1, char *str2)
 {
@@ -43,6 +64,71 @@ char	*strjoin(char *str1, char *str2)
 	return (ret);
 }
 
+t_fds	*ft_lstnew(t_fds **lst, int fd)
+{
+	t_fds	*ret;
+
+	ret = (t_fds *)malloc(sizeof(t_fds));
+	if (!ret)
+		return (NULL);
+	ret->fd = fd;
+	ret->box = NULL;
+	ret->next = *lst;
+	*lst = ret;
+	return (ret);
+}
+
+t_fds	*ft_findfd(t_fds **lst, int target)
+{
+	t_fds	*temp;
+
+	temp = *lst;
+	if (target < 0)
+		return (NULL);
+	if (!temp)
+		return (ft_lstnew(lst, target));
+	while (temp)
+	{
+		printf("\n\nFIND FD %d\n\n", temp->fd);
+		if (temp->fd == target)
+			break ;
+		temp = temp->next;
+	}
+	if (!temp)
+		return (ft_lstnew(lst, target));
+	return (temp);
+}
+
+void	ft_deletefd(t_fds **lst, int fd, char *ret)
+{
+	t_fds	*target;
+	t_fds	*temp;
+
+	temp = *lst;
+	if (temp->fd == fd)
+	{
+		target = temp;
+		temp = temp->next;
+	}
+	while (temp->next)
+	{
+		if (temp->next->fd == fd)
+		{
+			if (temp->next->box)
+			{
+				target = temp->next;
+				temp->next = temp->next->next;
+			}
+		}
+		temp = temp->next;
+	}
+	if (target)
+		free(target);
+}
+
+//////////////////////////////////////////////////////
+*/
+
 char	*read_temp(t_fds *lst, int fd, char *ret)
 {
 	int		idx;
@@ -65,7 +151,8 @@ char	*read_temp(t_fds *lst, int fd, char *ret)
 	free(temp);
 	if (!ft_strlen(ret, 1) && idx <= 0)
 	{
-		ft_deletefd(&lst, fd);
+		ft_deletefd(&lst, fd, ret);
+		//free(ret);
 		return (NULL);
 	}
 	return (ret);
@@ -85,7 +172,7 @@ char	*temp_split(char *ret)
 	if (ret[idx] == '\n')
 	{
 		temp[idx] = '\n';
-		idx++;
+		++idx;
 	}
 	temp[idx] = 0;
 	return (temp);
@@ -110,108 +197,59 @@ char	*ret_tail(char *ret)
 	return (newret);
 }
 
-t_fds	*ft_lstnew(t_fds **lst, int fd)
-{
-	t_fds	*ret;
-
-	ret = (t_fds *)malloc(sizeof(t_fds));
-	if (!ret)
-		return (NULL);
-	ret->fd = fd;
-	ret->box = NULL;
-    ret->next = *lst;
-	*lst = ret;
-    return (ret);
-}
-
-t_fds	*ft_findfd(t_fds **lst, int target)
-{
-	t_fds	*temp;
-
-	temp = *lst;
-	if (target < 0)
-		return (NULL);
-	if (!temp) //return (NULL)??
-		return (ft_lstnew(lst, target));
-	while (temp->next)
-    {
-    	if (temp->fd == target)
-    		break ;
-		temp = temp->next;
-    }
-	if (!temp->next)
-		return (ft_lstnew(lst, target));
-	return (temp);
-}
-
-void	ft_deletefd(t_fds **lst, int fd)
-{
-	t_fds	*temp;
-
-	temp = *lst;
-	if (temp->fd == fd)
-	{
-		if (temp->box)
-		{
-			free(temp->box);
-			//temp->fd = ;
-			temp = temp->next;
-		}
-		return ;
-	}
-	while (lst)
-	{
-		if (temp->next->fd == fd)
-		{
-			if (temp->next->box)
-			{
-				free(temp->next->box);
-				//temp->next->fd = NULL;
-				temp->next = temp->next->next;
-			}
-		}
-		temp = temp->next;
-	}
-}
-
 char	*get_next_line(int fd)
 {
-	static t_fds	*ret;
-	t_fds	*r;
+	static t_fds	*lst;
+	t_fds			*fbox;
 	char			*box;
-	char		    *temp;
+	char			*ret;
 
-	r = ft_findfd(&ret, fd);
-	if (!r)
+	fbox = ft_findfd(&lst, fd);
+	if (!fbox)
 		return (NULL);
-	box = read_temp(ret, r->fd, r->box);
+	box = read_temp(lst, fbox->fd, fbox->box);
 	if (!box)
 		return (NULL);
-	temp = temp_split(box);
-	if (!temp)
+	ret = temp_split(box);
+	if (!ret)
 		return (NULL);
-	r->box = ret_tail(box);
-	if (!r->box)
+	fbox->box = ret_tail(box);
+	if (!fbox->box)
 		return (NULL);
-	return (temp);
+	return (ret);
 }
-/*
+
 //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 int main()
 {
 	int fd = open("test.txt", O_RDONLY);
 	int fd2 = open("test2.txt", O_RDONLY);
+	int fd3 = open("test3.txt", O_RDONLY);
 
 	printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
-	printf("1- result1 -> %s", get_next_line(fd));
+	printf("1- result1 -> %s", get_next_line(fd2));
 	
-	printf("2- result2 -> %s", get_next_line(fd2));
+	printf("2- result2 -> %s", get_next_line(fd));
 	
-	printf("1- result3 -> %s", get_next_line(fd));
-	printf("2- result4 -> %s", get_next_line(fd2));
+	printf("1- result3 -> %s", get_next_line(fd2));
+	printf("2- result4 -> %s", get_next_line(fd));
 	
-	printf("1- result5 -> %s", get_next_line(fd));
-	printf("2- result6 -> %s", get_next_line(fd2));
-	printf("1- result7 -> %s", get_next_line(fd));
+	printf("3- result4 -> %s", get_next_line(fd3));
+	printf("3- result4 -> %s", get_next_line(fd3));
+	printf("3- result4 -> %s", get_next_line(fd3));
+	printf("3- result4 -> %s", get_next_line(fd3));
+	
+	printf("1- result5 -> %s", get_next_line(fd2));
+	//printf("2- result6 -> %s", get_next_line(fd));
+	//printf("1- result7 -> %s", get_next_line(fd2));
+	printf("3- result4 -> %s", get_next_line(fd3));
+	printf("3- result4 -> %s", get_next_line(fd3));
+	printf("3- result4 -> %s", get_next_line(fd3));
+	printf("3- result4 -> %s", get_next_line(fd3));
+	printf("2- result8 -> %s", get_next_line(fd2));
+	printf("1- result9 -> %s", get_next_line(fd));
 
-}*/
+	printf("2- result1 -> %s", get_next_line(fd2));
+	printf("1- result2 -> %s", get_next_line(fd));
+
+}
