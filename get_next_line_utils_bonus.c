@@ -6,41 +6,35 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 15:04:19 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/04 21:02:25 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/08 19:22:55 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 #include <stdlib.h>
 #include <stdio.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
-int	ft_strlen(char *str, int flag)
+int	ft_target_str(char *str, int target)
 {
 	int	len;
 
 	len = 0;
 	if (!str)
 		return (0);
-	if (flag)
-	{
-		while (str[len])
+	while (str[len] && str[len] != target)
 			len++;
-		return (len);
-	}
-	while (str[len] && str[len] != '\n')
-		len++;
 	if (str[len] == '\n')
 		len++;
 	return (len);
 }
 
-char	*strjoin(char *str1, char *str2)
+char	*ft_strjoin(char *str1, char *str2)
 {
 	int		retidx;
 	int		stridx;
 	int		amount;
 	char	*ret;
 
-	amount = ft_strlen(str1, 1) + ft_strlen(str2, 1);
+	amount = ft_target_str(str1, 0) + ft_target_str(str2, 0);
 	ret = (char *)malloc((amount + 1) * sizeof(char));
 	if (!ret)
 		return (NULL);
@@ -102,22 +96,21 @@ void	ft_deletefd(t_fds **lst, int fd)
 	if (temp->fd == fd)
 	{
 		target = temp;
-		temp = temp->next;
+		*lst = temp->next;
+		free(target);
 	}
-	while (temp->next)
+	else
 	{
-		if (temp->next->fd == fd)
+		while (temp->next)
 		{
-			if (temp->next->box)
+			if (temp->next->fd == fd)
 			{
 				target = temp->next;
 				temp->next = temp->next->next;
+				free(target);
+				break ;
 			}
+			temp = temp->next;
 		}
-		temp = temp->next;
 	}
-	if (target->box)
-		free(target->box);
-	if (target)
-		free(target);
 }

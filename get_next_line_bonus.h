@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 15:04:17 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/04 21:01:49 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/08 17:21:38 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,11 @@ typedef struct s_fds
 }	t_fds;
 
 char	*get_next_line(int fd);
-int		ft_strlen(char *str, int flag);
-char	*strjoin(char *str1, char *str2);
+int		ft_target_str(char *str, int target);
+int		ft_target_str(char *str, int target);
 t_fds	*ft_lstnew(t_fds **lst, int fd);
 t_fds	*ft_findfd(t_fds **lst, int target);
 void	ft_deletefd(t_fds **lst, int fd);
+char	*ft_strjoin(char *str1, char *str2);
 
 #endif
