@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 15:04:14 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/10 14:01:59 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/10 17:01:46 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,7 @@ char	*temp_split(char *ret)
 	while (ret[++idx] && ret[idx] != '\n')
 		temp[idx] = ret[idx];
 	if (ret[idx] == '\n')
-	{
-		temp[idx] = '\n';
-		++idx;
-	}
+		temp[idx++] = '\n';
 	temp[idx] = 0;
 	return (temp);
 }
@@ -90,6 +87,7 @@ char	*get_next_line(int fd)
 	static t_fds	*lst;
 	t_fds			*fbox;
 	char			*box;
+	char			*temp;
 
 	fbox = ft_findfd(&lst, fd);
 	if (!fbox)
@@ -97,10 +95,17 @@ char	*get_next_line(int fd)
 	box = read_temp(&lst, fbox->fd, fbox->box);
 	if (!box)
 		return (NULL);
+	temp = temp_split(box);
 	fbox->box = ret_tail(box);
 	if (!fbox->box)
 		return (NULL);
-	return (temp_split(box));
+	if (ft_target_str(fbox->box, 0) == 0)
+	{
+		free(fbox->box);
+		fbox->box = NULL;
+		ft_deletefd(&lst, fd);
+	}
+	return (temp);
 }
 
 /*

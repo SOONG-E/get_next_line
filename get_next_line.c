@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:08:33 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/10 15:30:52 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/10 17:21:57 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,31 +15,9 @@
 #include <stdlib.h>
 #include <fcntl.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 #include <stdio.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
-//#define BUFFER_SIZE 42  //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제no제하하기  제제발  제제바바제제바바
+#define BUFFER_SIZE 42  //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제no제하하기  제제발  제제바바제제바바
 
-/*
-int	ft_strlen(char *str, int flag)
-{
-	int	len;
-
-	len = 0;
-	if (!str)
-		return (0);
-	if (flag)
-	{
-		while (str[len])
-			len++;
-		return (len);
-	}
-	while (str[len] && str[len] != '\n')
-		len++;
-	if (str[len] == '\n')
-		len++;
-	return (len);
-}
-*/
-
-char	*strjoin(char *str1, char *str2)
+char	*ft_strjoin(char *str1, char *str2)
 {
 	int		retidx;
 	int		stridx;
@@ -77,7 +55,7 @@ char	*read_temp(int fd, char *ret)
 	while (idx > 0)
 	{
 		temp[idx] = 0;
-		ret = strjoin(ret, temp);
+		ret = ft_strjoin(ret, temp);
 		if (!ret)
 			return (NULL);
 		if (ft_strlen(temp, 0) < idx)
@@ -85,11 +63,6 @@ char	*read_temp(int fd, char *ret)
 		idx = read(fd, temp, BUFFER_SIZE);
 	}
 	free(temp);
-	if (!ft_strlen(ret, 1) && idx <= 0)
-	{
-		free(ret);
-		return (NULL);
-	}
 	return (ret);
 }
 
@@ -133,23 +106,32 @@ char	*get_next_line(int fd)
 {
 	static char	*ret;
 	char		*box;
+	char		*temp;
 
 	if (fd < 0)
 		return (NULL);
 	box = read_temp(fd, ret);
 	if (!box)
 		return (NULL);
+	temp = temp_split(box);
+	if (!temp)
+		return (NULL);
 	ret = ret_tail(box);
 	if (!ret)
 		return (NULL);
-	return (temp_split(box));
+	if (ft_strlen(ret, 1) == 0)
+	{
+		free(ret);
+		ret = NULL;
+	}
+	return (temp);
 }
 
-/*
+
 //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 int main()
 {
-	int fd = open("test.txt", O_RDONLY);
+	int fd = open("test6.txt", O_RDONLY);
 
 	printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
 	printf("result1 -> %s", get_next_line(fd));
@@ -164,4 +146,3 @@ int main()
 	printf("result6 -> %s", get_next_line(fd));
 
 }
-*/
