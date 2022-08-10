@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 21:20:40 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/10 16:18:54 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/10 21:08:23 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,5 +16,6 @@
 char	*get_next_line(int fd);
 int		ft_strlen(char *str, int flag);
 char	*temp_split(char *ret);
+char	*ft_strchr(const char *str, int c);
 
 #endif

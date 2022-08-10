@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:08:33 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/10 17:21:57 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/10 21:50:23 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <fcntl.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 #include <stdio.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
-#define BUFFER_SIZE 42  //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제no제하하기  제제발  제제바바제제바바
+//#define BUFFER_SIZE 42  //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제no제하하기  제제발  제제바바제제바바
 
 char	*ft_strjoin(char *str1, char *str2)
 {
@@ -51,16 +51,23 @@ char	*read_temp(int fd, char *ret)
 	temp = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!temp)
 		return (NULL);
-	idx = read(fd, temp, BUFFER_SIZE);
-	while (idx > 0)
-	{
+	idx = 1;
+	while (idx)
+	{	
+		idx = read(fd, temp, BUFFER_SIZE);
+		if (idx == 0)
+			break ;
+		if (idx == -1)
+		{
+			free(ret);
+			break ;
+		}
 		temp[idx] = 0;
 		ret = ft_strjoin(ret, temp);
 		if (!ret)
 			return (NULL);
-		if (ft_strlen(temp, 0) < idx)
+		if (ft_strchr(ret, '\n'))
 			break ;
-		idx = read(fd, temp, BUFFER_SIZE);
 	}
 	free(temp);
 	return (ret);
@@ -82,7 +89,7 @@ char	*temp_split(char *ret)
 	temp[idx] = 0;
 	return (temp);
 }
-
+ 
 char	*ret_tail(char *ret)
 {
 	char	*newret;
@@ -108,11 +115,14 @@ char	*get_next_line(int fd)
 	char		*box;
 	char		*temp;
 
-	if (fd < 0)
+	if (BUFFER_SIZE < 1)
 		return (NULL);
 	box = read_temp(fd, ret);
 	if (!box)
-		return (NULL);
+	{
+		ret = NULL;
+		return (NULL);	
+	}
 	temp = temp_split(box);
 	if (!temp)
 		return (NULL);
@@ -127,22 +137,18 @@ char	*get_next_line(int fd)
 	return (temp);
 }
 
-
+/*
 //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 int main()
 {
-	int fd = open("test6.txt", O_RDONLY);
-
-	printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
-	printf("result1 -> %s", get_next_line(fd));
-	
-	printf("result2 -> %s", get_next_line(fd));
-	
-	printf("result3 -> %s", get_next_line(fd));
-	printf("result4 -> %s", get_next_line(fd));
-	
-	printf("result5 -> %s", get_next_line(fd));
-	printf("result6 -> %s", get_next_line(fd));
-	printf("result6 -> %s", get_next_line(fd));
-
+	int fd = open("test4.txt", O_RDONLY);
+	char c = 0;
+	printf("%s", get_next_line(fd));
+	read(fd, &c, 1);
+	printf("%c \n", c);
 }
+*/
+
+
+
+//bonus 수정 !!!!!!!!

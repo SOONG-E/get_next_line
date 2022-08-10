@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 15:04:14 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/10 17:01:46 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/10 21:13:20 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,19 @@ char	*ret_tail(char *ret)
 	if (ret)
 		free(ret);
 	return (newret);
+}
+
+char	*ft_strchr(const char *str, int c)
+{
+	while (*str != '\0')
+	{
+		if (*str == (char) c)
+			return ((char *) str);
+		str++;
+	}
+	if ((char) c == '\0')
+		return ((char *) str);
+	return (0);
 }
 
 char	*get_next_line(int fd)
