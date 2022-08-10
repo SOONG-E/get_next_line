@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:08:33 by yujelee           #+#    #+#             */
-/*   Updated: 2022/07/28 19:51:31 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/10 15:30:52 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,29 @@
 #include <stdlib.h>
 #include <fcntl.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 #include <stdio.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
-#define BUFFER_SIZE 42  //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
+//#define BUFFER_SIZE 42  //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제no제하하기  제제발  제제바바제제바바
+
+/*
+int	ft_strlen(char *str, int flag)
+{
+	int	len;
+
+	len = 0;
+	if (!str)
+		return (0);
+	if (flag)
+	{
+		while (str[len])
+			len++;
+		return (len);
+	}
+	while (str[len] && str[len] != '\n')
+		len++;
+	if (str[len] == '\n')
+		len++;
+	return (len);
+}
+*/
 
 char	*strjoin(char *str1, char *str2)
 {
@@ -83,10 +105,7 @@ char	*temp_split(char *ret)
 	while (ret[++idx] && ret[idx] != '\n')
 		temp[idx] = ret[idx];
 	if (ret[idx] == '\n')
-	{
-		temp[idx] = '\n';
-		idx++;
-	}
+		temp[idx++] = '\n';
 	temp[idx] = 0;
 	return (temp);
 }
@@ -113,20 +132,17 @@ char	*ret_tail(char *ret)
 char	*get_next_line(int fd)
 {
 	static char	*ret;
-	char		*temp;
+	char		*box;
 
 	if (fd < 0)
 		return (NULL);
-	ret = read_temp(fd, ret);
+	box = read_temp(fd, ret);
+	if (!box)
+		return (NULL);
+	ret = ret_tail(box);
 	if (!ret)
 		return (NULL);
-	temp = temp_split(ret);
-	if (!temp)
-		return (NULL);
-	ret = ret_tail(ret);
-	if (!ret)
-		return (NULL);
-	return (temp);
+	return (temp_split(box));
 }
 
 /*

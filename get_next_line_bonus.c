@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 15:04:14 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/08 20:25:12 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/10 14:01:59 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <fcntl.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 #include <stdio.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
-#define BUFFER_SIZE 1  //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제no제하하기  제제발  제제바바제제바바
+// #define BUFFER_SIZE 42  //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제no제하하기  제제발  제제바바제제바바
 
 char	*read_temp(t_fds **lst, int fd, char *ret)
 {
@@ -103,7 +103,7 @@ char	*get_next_line(int fd)
 	return (temp_split(box));
 }
 
-
+/*
 //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
 int main()
 {
@@ -117,4 +117,4 @@ int main()
 	printf("-> %s", get_next_line(fd));
 	printf("-> %s", get_next_line(fd));
 
-}
+}*/
