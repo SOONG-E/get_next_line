@@ -6,13 +6,13 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 15:04:19 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/08 19:22:55 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/11 15:24:43 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 #include <stdlib.h>
-#include <stdio.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
+
 int	ft_target_str(char *str, int target)
 {
 	int	len;

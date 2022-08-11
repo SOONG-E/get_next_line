@@ -6,16 +6,25 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 15:04:14 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/10 21:13:20 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/11 15:24:19 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 #include <unistd.h>
 #include <stdlib.h>
-#include <fcntl.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
-#include <stdio.h> //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
-// #define BUFFER_SIZE 42  //ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제no제하하기  제제발  제제바바제제바바
+
+char	*ft_strchr(const char *str, int c)
+{
+	int	idx;
+
+	idx = 0;
+	while (str[idx] && str[idx] != c)
+		idx++;
+	if (str[idx] == c)
+		return ((char *)&str[idx]);
+	return (0);
+}
 
 char	*read_temp(t_fds **lst, int fd, char *ret)
 {
@@ -32,12 +41,12 @@ char	*read_temp(t_fds **lst, int fd, char *ret)
 		ret = ft_strjoin(ret, temp);
 		if (!ret)
 			return (NULL);
-		if (ft_target_str(temp, '\n') < idx)
+		if (ft_strchr(temp, '\n'))
 			break ;
 		idx = read(fd, temp, BUFFER_SIZE);
 	}
 	free(temp);
-	if (!ft_target_str(ret, 0) && idx <= 0)
+	if ((!ft_target_str(ret, 0) && idx == 0) || idx < 0)
 	{
 		free(ret);
 		ft_deletefd(lst, fd);
@@ -82,19 +91,6 @@ char	*ret_tail(char *ret)
 	return (newret);
 }
 
-char	*ft_strchr(const char *str, int c)
-{
-	while (*str != '\0')
-	{
-		if (*str == (char) c)
-			return ((char *) str);
-		str++;
-	}
-	if ((char) c == '\0')
-		return ((char *) str);
-	return (0);
-}
-
 char	*get_next_line(int fd)
 {
 	static t_fds	*lst;
@@ -120,19 +116,3 @@ char	*get_next_line(int fd)
 	}
 	return (temp);
 }
-
-/*
-//ㅈㅔ바ㄹ 제제출출하하기  전전에  삭삭제제하하기  제제발  제제바바제제바바
-int main()
-{
-	int fd = open("test4.txt", O_RDONLY);
-	int fd2 = open("test2.txt", O_RDONLY);
-	int fd3 = open("test3.txt", O_RDONLY);
-
-	printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
-	printf("-> %s", get_next_line(fd));
-	printf("-> %s", get_next_line(fd));
-	printf("-> %s", get_next_line(fd));
-	printf("-> %s", get_next_line(fd));
-
-}*/
