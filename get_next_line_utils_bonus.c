@@ -6,21 +6,21 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 15:04:19 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/11 15:24:43 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/11 19:46:25 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 #include <stdlib.h>
 
-int	ft_target_str(char *str, int target)
+int	ft_strlen(char *str, int endchr)
 {
 	int	len;
 
 	len = 0;
 	if (!str)
 		return (0);
-	while (str[len] && str[len] != target)
+	while (str[len] && str[len] != endchr)
 			len++;
 	if (str[len] == '\n')
 		len++;
@@ -34,7 +34,7 @@ char	*ft_strjoin(char *str1, char *str2)
 	int		amount;
 	char	*ret;
 
-	amount = ft_target_str(str1, 0) + ft_target_str(str2, 0);
+	amount = ft_strlen(str1, 0) + ft_strlen(str2, 0);
 	ret = (char *)malloc((amount + 1) * sizeof(char));
 	if (!ret)
 		return (NULL);
@@ -71,9 +71,9 @@ t_fds	*ft_findfd(t_fds **lst, int target)
 {
 	t_fds	*temp;
 
-	temp = *lst;
 	if (target < 0)
 		return (NULL);
+	temp = *lst;
 	if (!temp)
 		return (ft_lstnew(lst, target));
 	while (temp)
