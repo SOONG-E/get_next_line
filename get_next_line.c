@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:08:33 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/12 13:56:58 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/12 14:03:42 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ char	*temp_split(char *ret)
 
 	temp = (char *)malloc((ft_strlen(ret, '\n') + 1) * sizeof(char));
 	if (!temp)
-		return (NULL);
+		return (ft_free(ret, temp));
 	idx = -1;
 	while (ret[++idx] && ret[idx] != '\n')
 		temp[idx] = ret[idx];
@@ -91,7 +91,7 @@ char	*ret_tail(char *ret)
 	idx = ft_strlen(ret, '\n');
 	newret = (char *)malloc((ft_strlen(ret, 0) - idx + 1) * sizeof(char));
 	if (!newret)
-		return (NULL);
+		return (ft_free(ret, newret));
 	newidx = 0;
 	while (ret[idx])
 		newret[newidx++] = ret[idx++];
@@ -109,10 +109,7 @@ char	*get_next_line(int fd)
 
 	box = read_temp(fd, ret);
 	if (!box)
-	{
-		ret = NULL;
 		return (NULL);
-	}
 	temp = temp_split(box);
 	if (!temp)
 		return (NULL);
