@@ -6,11 +6,13 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/28 19:49:19 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/11 15:24:44 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/12 13:56:57 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_target_str(char *str, int target)
+#include <stdlib.h>
+
+int	ft_strlen(char *str, int target)
 {
 	int	len;
 
@@ -34,4 +36,12 @@ char	*ft_strchr(const char *str, int c)
 	if (str[idx] == c)
 		return ((char *)&str[idx]);
 	return (0);
+}
+
+char	*ft_free(char *ret, char *temp)
+{
+	if (temp)
+		free(temp);
+	free(ret);
+	return (NULL);
 }

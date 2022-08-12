@@ -6,7 +6,7 @@
 /*   By: yujelee <yujelee@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:08:33 by yujelee           #+#    #+#             */
-/*   Updated: 2022/08/11 15:24:15 by yujelee          ###   ########seoul.kr  */
+/*   Updated: 2022/08/12 13:56:58 by yujelee          ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*ft_strjoin(char *str1, char *str2)
 	int		amount;
 	char	*ret;
 
-	amount = ft_target_str(str1, 0) + ft_target_str(str2, 0);
+	amount = ft_strlen(str1, 0) + ft_strlen(str2, 0);
 	ret = (char *)malloc((amount + 1) * sizeof(char));
 	if (!ret)
 		return (NULL);
@@ -49,21 +49,18 @@ char	*read_temp(int fd, char *ret)
 	if (!temp)
 		return (NULL);
 	idx = read(fd, temp, BUFFER_SIZE);
-	while (idx)
-	{	
-		if (idx == -1)
-		{
-			free(ret);
-			break ;
-		}
+	while (idx > 0)
+	{
 		temp[idx] = 0;
 		ret = ft_strjoin(ret, temp);
 		if (!ret)
-			return (NULL);
+			return (ft_free(ret, temp));
 		if (ft_strchr(ret, '\n'))
 			break ;
 		idx = read(fd, temp, BUFFER_SIZE);
 	}
+	if ((!ft_strlen(ret, 0) && idx == 0) || idx < 0)
+		return (ft_free(ret, temp));
 	free(temp);
 	return (ret);
 }
@@ -73,7 +70,7 @@ char	*temp_split(char *ret)
 	int		idx;
 	char	*temp;
 
-	temp = (char *)malloc((ft_target_str(ret, '\n') + 1) * sizeof(char));
+	temp = (char *)malloc((ft_strlen(ret, '\n') + 1) * sizeof(char));
 	if (!temp)
 		return (NULL);
 	idx = -1;
@@ -91,8 +88,8 @@ char	*ret_tail(char *ret)
 	int		idx;
 	int		newidx;
 
-	idx = ft_target_str(ret, '\n');
-	newret = (char *)malloc((ft_target_str(ret, 0) - idx + 1) * sizeof(char));
+	idx = ft_strlen(ret, '\n');
+	newret = (char *)malloc((ft_strlen(ret, 0) - idx + 1) * sizeof(char));
 	if (!newret)
 		return (NULL);
 	newidx = 0;
@@ -122,7 +119,7 @@ char	*get_next_line(int fd)
 	ret = ret_tail(box);
 	if (!ret)
 		return (NULL);
-	if (ft_target_str(ret, 0) == 0)
+	if (ft_strlen(ret, 0) == 0)
 	{
 		free(ret);
 		ret = NULL;
