@@ -47,7 +47,7 @@ char	*read_temp(int fd, char *ret)
 
 	temp = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!temp)
-		return (NULL);
+		return (ft_free(ret, temp));
 	idx = read(fd, temp, BUFFER_SIZE);
 	while (idx > 0)
 	{
